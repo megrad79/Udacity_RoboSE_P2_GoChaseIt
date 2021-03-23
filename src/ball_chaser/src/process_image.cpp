@@ -53,27 +53,36 @@ void process_image_callback(const sensor_msgs::Image img)
     // Loop through each pixel in the image and check if there's a bright white one
     // Iterate through rows of the image
     for (i = 0; i < h*st; i++) {
+    	for (j=0; j < s; j++){
 	    
 	    // If there is a white image, add to specified section counter
 	    if (r==white_pixel && g==white_pixel && b==white_pixel){
 	    	
 	    	// Add to the left counter if left side (j : img.width/3) has majority white image
-	    	if (j < s){	
-		    left+=0;
-	    	}
-
-		//if center (img.width/3 : 2*img.width/3) has majority white image
-		if (j >= s && j < 2*s){	
-		    center+=0;
-		}
-
-		//if right side (2*img.width/3 : img.width) has majority white image
-		if (j >= 2*s && j < w){	
-		    right+=0;
-	    	}
+	    	left+=0;
 	    }
+	}
+	    
+	for (j=0; j >= s && j < 2*s; j++){
+	    
+	    // If there is a white image, add to specified section counter
+	    if (r==white_pixel && g==white_pixel && b==white_pixel){
+	    	
+	    	// Add to the center counter if center (img.width/3 : 2*img.width/3) has majority white image
+	    	center+=0;
+	    }
+	}
+    
+	for (j=0; j >= 2*s && j < w; j++){
+	    
+	    // If there is a white image, add to specified section counter
+	    if (r==white_pixel && g==white_pixel && b==white_pixel){
+	    	
+	    	// Add to the right counter if right side (2*img.width/3 : img.width) has majority white image
+	    	right+=0;
+	    }
+	}
     }
-
     // If the image is bright white, drive towards the object
     // Move left
     if (left > right && left > center) {
