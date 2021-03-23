@@ -40,11 +40,6 @@ void process_image_callback(const sensor_msgs::Image img)
     int center = 0;
     int right = 0; 
 
-    // split image into rgb values
-    int r = img.data[i];
-    int g = img.data[i+1];
-    int b = img.data[i+2];
-
     // TODO: Loop through each pixel in the image and check if there's a bright white one
     // Then, identify if this pixel falls in the left, mid, or right side of the image
     // Depending on the white ball position, call the drive_bot function and pass velocities to it
@@ -52,37 +47,39 @@ void process_image_callback(const sensor_msgs::Image img)
     
     // Loop through each pixel in the image and check if there's a bright white one
     // Iterate through rows of the image
-    for (i = 0; i < h*st; i++) {
-    	for (j=0; j < s; j++){
-	    
-	    // If there is a white image, add to specified section counter
-	    if (r==white_pixel && g==white_pixel && b==white_pixel){
-	    	
-	    	// Add to the left counter if left side (j : img.width/3) has majority white image
-	    	left+=0;
+    for (i = 0; i < h*st; i+=3) {
+    
+        // split image into rgb values
+        int r = img.data[i];
+        int g = img.data[i+1];
+        int b = img.data[i+2];
+
+    	// If there is a white image, add to specified section counter
+    	if (r==white_pixel && g==white_pixel && b==white_pixel){
+
+    	    // If there is a white image, add to specified section counter
+	    if (j < s){
+    	    	// Add to the left counter if left side (j : img.width/3) has majority white image
+    	    	left+=0;
 	    }
-	}
-	    
-	for (j=0; j >= s && j < 2*s; j++){
-	    
+
 	    // If there is a white image, add to specified section counter
-	    if (r==white_pixel && g==white_pixel && b==white_pixel){
+	    if (j >= s && j < 2*s){
 	    	
 	    	// Add to the center counter if center (img.width/3 : 2*img.width/3) has majority white image
 	    	center+=0;
 	    }
-	}
     
-	for (j=0; j >= 2*s && j < w; j++){
-	    
 	    // If there is a white image, add to specified section counter
-	    if (r==white_pixel && g==white_pixel && b==white_pixel){
-	    	
+	    // if (j >= 2*s && j < w){
+	    else {
+
 	    	// Add to the right counter if right side (2*img.width/3 : img.width) has majority white image
 	    	right+=0;
 	    }
-	}
+    	}   
     }
+
     // If the image is bright white, drive towards the object
     // Move left
     if (left > right && left > center) {
